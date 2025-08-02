@@ -1,0 +1,2377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProImage Tools | Professional Image Processing Suite</title>
+    <meta name="description" content="Free online image processing tools. Resize, compress, convert images to PDF, and optimize your photos. 100% free and easy to use.">
+    <meta name="keywords" content="image resizer, photo compressor, pdf converter, image tools, free image processing">
+    <meta name="author" content="ProImage Tools">
+    <meta name="robots" content="index, follow">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --primary-dark: #1a252f;
+            --accent: #3498db;
+            --success: #27ae60;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --card-bg: rgba(255, 255, 255, 0.97);
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+            --radius: 8px;
+            --header-height: 80px;
+        }
+        
+        .dark-mode {
+            --primary: #2c3e50;
+            --primary-dark: #1a252f;
+            --light: #1a202c;
+            --dark: #f8fafc;
+            --gray: #a0aec0;
+            --card-bg: rgba(30, 41, 59, 0.97);
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: var(--transition);
+            font-weight: 400;
+        }
+        
+        body.dark-mode {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            height: var(--header-height);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        body.dark-mode header {
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--primary);
+            transition: var(--transition);
+            letter-spacing: -0.5px;
+        }
+        
+        .logo-icon {
+            margin-right: 12px;
+            font-size: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .logo:hover {
+            transform: translateY(-2px);
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        
+        .tool-switcher {
+            display: flex;
+            background: var(--light);
+            border-radius: 30px;
+            padding: 6px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        body.dark-mode .tool-switcher {
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .tool-button {
+            padding: 8px 20px;
+            border: none;
+            background: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: var(--transition);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gray);
+        }
+        
+        .tool-button.active {
+            background: var(--card-bg);
+            box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        body.dark-mode .tool-button.active {
+            background: #1e293b;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+        }
+        
+        .theme-toggle {
+            background: var(--light);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--gray);
+            font-size: 1.2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .theme-toggle:hover {
+            background: var(--primary);
+            color: white;
+            transform: rotate(15deg);
+        }
+        
+        /* Main Content */
+        main {
+            padding-top: 50px;
+            padding-bottom: 80px;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 40px 0;
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+            font-weight: 800;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin: 0 auto 35px;
+            line-height: 1.7;
+            max-width: 700px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+        
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 35px 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        body.dark-mode .feature-card {
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            font-size: 46px;
+            margin-bottom: 25px;
+            color: var(--primary);
+            height: 90px;
+            width: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(67, 97, 238, 0.05);
+            border-radius: 50%;
+            margin-left: auto;
+            margin-right: auto;
+            transition: var(--transition);
+        }
+        
+        .feature-card:hover .feature-icon {
+            background: rgba(67, 97, 238, 0.1);
+            transform: scale(1.05);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+            font-weight: 700;
+        }
+        
+        .feature-card p {
+            font-size: 1rem;
+            color: var(--gray);
+            line-height: 1.7;
+        }
+        
+        /* Tool Container */
+        .tool-container {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 35px;
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        body.dark-mode .tool-container {
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .tool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .tool-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 700;
+        }
+        
+        .tool-title-icon {
+            font-size: 30px;
+            background: rgba(67, 97, 238, 0.1);
+            height: 55px;
+            width: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+        
+        .tool-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--primary);
+            border-radius: var(--radius);
+            padding: 40px 25px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 30px;
+            transition: var(--transition);
+            background: rgba(67, 97, 238, 0.03);
+            position: relative;
+        }
+        
+        .upload-area:hover {
+            background: rgba(67, 97, 238, 0.08);
+        }
+        
+        .upload-area.active {
+            background: rgba(67, 97, 238, 0.15);
+            border-style: solid;
+        }
+        
+        .upload-icon {
+            font-size: 54px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .upload-text {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            font-weight: 600;
+        }
+        
+        .file-info {
+            margin-top: 15px;
+            font-size: 1rem;
+            color: var(--gray);
+        }
+        
+        /* Controls */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .control-group {
+            flex: 1;
+            min-width: 220px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .control-group input, 
+        .control-group select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid var(--light);
+            border-radius: 10px;
+            font-size: 1.05rem;
+            background: var(--card-bg);
+            color: var(--dark);
+            transition: var(--transition);
+        }
+        
+        body.dark-mode .control-group input,
+        body.dark-mode .control-group select {
+            border: 1px solid #334155;
+        }
+        
+        .control-group input:focus, 
+        .control-group select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .control-group input[type="range"] {
+            padding: 0;
+            height: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .range-value {
+            display: inline-block;
+            min-width: 40px;
+            text-align: right;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        .dimension-presets {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .preset-btn {
+            padding: 9px 18px;
+            background: var(--light);
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--dark);
+            font-weight: 500;
+        }
+        
+        body.dark-mode .preset-btn {
+            background: #1e293b;
+        }
+        
+        .preset-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .preset-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Preview Area */
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 35px;
+        }
+        
+        .image-preview {
+            flex: 1;
+            min-width: 320px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        body.dark-mode .image-preview {
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .image-preview h3 {
+            margin-bottom: 25px;
+            color: var(--primary);
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            font-weight: 700;
+        }
+        
+        body.dark-mode .image-preview h3 {
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .preview-img-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            background: #f8fafc;
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0,0,0,0.05);
+            background-image: 
+                linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
+                linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
+                linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+        
+        body.dark-mode .preview-img-container {
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.05);
+            background-image: 
+                linear-gradient(45deg, #2d3748 25%, transparent 25%),
+                linear-gradient(-45deg, #2d3748 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #2d3748 75%),
+                linear-gradient(-45deg, transparent 75%, #2d3748 75%);
+        }
+        
+        .preview-placeholder {
+            text-align: center;
+            color: var(--gray);
+            padding: 20px;
+        }
+        
+        .preview-placeholder i {
+            font-size: 52px;
+            display: block;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .preview-stats {
+            margin-top: 25px;
+            padding: 18px;
+            background: var(--light);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+        
+        body.dark-mode .preview-stats {
+            background: #1e293b;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+        
+        .preview-actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 14px 26px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+        }
+        
+        body.dark-mode .btn-secondary {
+            background: #1e293b;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gray);
+            color: white;
+        }
+        
+        .btn-accent {
+            background: var(--accent);
+        }
+        
+        .btn-accent:hover {
+            background: #2980b9;
+        }
+        
+        .btn-success {
+            background: var(--success);
+        }
+        
+        .btn-success:hover {
+            background: #219653;
+        }
+        
+        .btn-icon {
+            font-size: 1.15rem;
+        }
+        
+        /* Progress Indicator */
+        .progress-container {
+            display: none;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: var(--light);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 18px;
+        }
+        
+        body.dark-mode .progress-bar {
+            background: #1e293b;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        
+        .progress-text {
+            font-size: 1.05rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 60px 0 30px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 35px;
+            margin-bottom: 50px;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            color: var(--accent);
+            font-weight: 700;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+        
+        .footer-links a {
+            color: #a0aec0;
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.05rem;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 35px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #a0aec0;
+            font-size: 1rem;
+        }
+        
+        /* Tutorial */
+        .tutorial {
+            background: rgba(76, 201, 240, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .tutorial h4 {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            color: var(--accent);
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .tutorial-icon {
+            font-size: 1.4rem;
+        }
+        
+        .tutorial p {
+            line-height: 1.7;
+            color: var(--dark);
+            font-size: 1.05rem;
+        }
+        
+        body.dark-mode .tutorial p {
+            color: #e2e8f0;
+        }
+        
+        /* Aspect Ratio Lock */
+        .aspect-lock {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .lock-icon {
+            cursor: pointer;
+            color: var(--gray);
+            transition: var(--transition);
+            font-size: 1.3rem;
+        }
+        
+        .lock-icon.active {
+            color: var(--primary);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 900px) {
+            .hero h1 {
+                font-size: 2.4rem;
+            }
+            
+            .tool-switcher {
+                margin-top: 15px;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.1rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .tool-title {
+                font-size: 1.5rem;
+            }
+            
+            .preview-container {
+                flex-direction: column;
+            }
+            
+            .tool-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .tool-actions {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.9rem;
+            }
+            
+            .tool-button {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .preview-actions {
+                flex-direction: column;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(67, 97, 238, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 220px;
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 12px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            font-weight: normal;
+            line-height: 1.5;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Badge */
+        .free-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* Download Section */
+        .download-section {
+            margin-top: 35px;
+            padding: 30px;
+            background: rgba(67, 97, 238, 0.05);
+            border-radius: var(--radius);
+            border: 2px dashed var(--primary);
+            text-align: center;
+        }
+        
+        .download-section h3 {
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 1.4rem;
+        }
+        
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--success);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 10px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            text-decoration: none;
+            margin-top: 15px;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .download-btn:hover {
+            background: #219653;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+        }
+        
+        .file-format {
+            font-size: 1rem;
+            color: var(--gray);
+            margin-top: 10px;
+        }
+        
+        /* Image Thumbnails */
+        .image-thumbnails {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .thumbnail-container {
+            position: relative;
+            width: 85px;
+            height: 85px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--light);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+        
+        body.dark-mode .thumbnail-container {
+            border: 2px solid #334155;
+        }
+        
+        .thumbnail-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .thumbnail-container .delete-thumbnail {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: rgba(255, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        
+        .thumbnail-container .page-number {
+            position: absolute;
+            bottom: 2px;
+            left: 2px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 11px;
+        }
+        
+        /* PDF Preview */
+        .pdf-preview-container {
+            min-height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px solid rgba(0,0,0,0.05);
+            margin-top: 25px;
+        }
+        
+        body.dark-mode .pdf-preview-container {
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .pdf-placeholder {
+            text-align: center;
+            padding: 35px;
+            color: var(--gray);
+        }
+        
+        .pdf-placeholder i {
+            font-size: 52px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .pdf-preview {
+            width: 100%;
+            height: 420px;
+            border: none;
+            border-radius: 8px;
+        }
+        
+        /* PDF Settings */
+        .pdf-settings {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-top: 25px;
+        }
+        
+        .pdf-setting-group {
+            flex: 1;
+            min-width: 220px;
+        }
+        
+        .pdf-setting-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.05rem;
+        }
+        
+        body.dark-mode .pdf-setting-group label {
+            color: #e2e8f0;
+        }
+        
+        /* Ad Containers */
+        .ad-container {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin: 40px 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        body.dark-mode .ad-container {
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .ad-label {
+            display: inline-block;
+            background: #f1f1f1;
+            color: #666;
+            font-size: 0.85rem;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        body.dark-mode .ad-label {
+            background: #2d3748;
+            color: #a0aec0;
+        }
+        
+        .ad-placeholder {
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: var(--gray);
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        body.dark-mode .ad-placeholder {
+            border-color: #2d3748;
+        }
+        
+        .ad-placeholder i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .ad-code-hint {
+            font-size: 0.9rem;
+            margin-top: 15px;
+            color: var(--gray);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="/" class="logo">
+                    <span class="logo-icon"><i class="fas fa-crop-alt"></i></span>
+                    <span>ProImage Tools</span>
+                </a>
+                <div class="nav-links">
+                    <div class="tool-switcher">
+                        <button class="tool-button active" id="photoResizerBtn">
+                            <i class="fas fa-image"></i> Photo Resizer
+                        </button>
+                        <button class="tool-button" id="signatureResizerBtn">
+                            <i class="fas fa-signature"></i> Signature
+                        </button>
+                        <button class="tool-button" id="imageCompressorBtn">
+                            <i class="fas fa-compress-alt"></i> Compressor
+                        </button>
+                        <button class="tool-button" id="pdfConverterBtn">
+                            <i class="fas fa-file-pdf"></i> PDF Converter
+                        </button>
+                    </div>
+                    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <section class="hero">
+            <h1>Professional Image Processing Suite</h1>
+            <p>Resize, optimize, enhance, and convert your images with our powerful tools. All features are 100% free with no limitations.</p>
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-expand-alt"></i>
+                    </div>
+                    <h3>Precision Resizing</h3>
+                    <p>Resize images to exact dimensions while maintaining quality with our advanced algorithms</p>
+                </div>
+                <div class="feature-card fade-in" style="animation-delay: 0.1s">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <h3>PDF Conversion</h3>
+                    <p>Convert images to PDF documents with customizable page settings and multiple image support</p>
+                </div>
+                <div class="feature-card fade-in" style="animation-delay: 0.2s">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-archive"></i>
+                    </div>
+                    <h3>Smart Compression</h3>
+                    <p>Reduce file sizes without visible quality loss using modern compression techniques</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Top Ad Container -->
+        <div class="ad-container fade-in">
+            <span class="ad-label">ADVERTISEMENT</span>
+            <div class="ad-placeholder">
+                <i class="fas fa-ad"></i>
+                <p>Ad Space for Google AdSense</p>
+                <p class="ad-code-hint">Insert your AdSense ad unit code here</p>
+                <!-- Google AdSense Ad Unit -->
+                <!-- 
+                <ins class="adsbygoogle"
+                    style="display:block"
+                    data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                    data-ad-slot="XXXXXXXXXX"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+                -->
+            </div>
+        </div>
+
+        <!-- Photo Resizer Tool -->
+        <div id="photoResizerTool" class="tool-container fade-in">
+            <div class="free-badge">100% FREE</div>
+            <div class="tool-header">
+                <h2 class="tool-title">
+                    <span class="tool-title-icon"><i class="fas fa-image"></i></span> 
+                    Photo Resizer
+                </h2>
+                <div class="tool-actions">
+                    <button class="btn btn-secondary" id="resetPhotoBtn">
+                        <i class="fas fa-redo btn-icon"></i> Reset
+                    </button>
+                    <button class="btn" id="resizeBtn">
+                        <i class="fas fa-magic btn-icon"></i> Process Image
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tutorial">
+                <h4><i class="fas fa-lightbulb tutorial-icon"></i> How to Resize Photos</h4>
+                <p>1. Upload your photo using the button below or drag & drop it<br>
+                2. Adjust dimensions and quality settings as needed<br>
+                3. Click "Process Image" to see the optimized result<br>
+                4. Download your perfectly resized photo</p>
+            </div>
+            
+            <div id="photoUploadArea" class="upload-area">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <p class="upload-text">Drag & drop your photo here or click to browse</p>
+                <button class="btn btn-secondary" id="photoBrowseBtn">
+                    <i class="fas fa-folder-open btn-icon"></i> Select Photo
+                </button>
+                <p class="file-info">Supports JPG, PNG, WebP (Max 10MB)</p>
+                <input type="file" id="photoFileInput" accept="image/*" style="display: none;">
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <label for="widthInput">
+                        <i class="fas fa-arrows-alt-h"></i> Width (px): 
+                        <span class="range-value" id="widthValue">Auto</span>
+                    </label>
+                    <input type="number" id="widthInput" placeholder="Auto">
+                    <div class="dimension-presets">
+                        <button class="preset-btn" data-width="800">800px</button>
+                        <button class="preset-btn" data-width="1200">1200px</button>
+                        <button class="preset-btn" data-width="1920">1920px</button>
+                    </div>
+                    <div class="aspect-lock">
+                        <span class="lock-icon active" id="aspectLock">🔒</span>
+                        <span>Maintain aspect ratio</span>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="heightInput">
+                        <i class="fas fa-arrows-alt-v"></i> Height (px): 
+                        <span class="range-value" id="heightValue">Auto</span>
+                    </label>
+                    <input type="number" id="heightInput" placeholder="Auto">
+                    <div class="dimension-presets">
+                        <button class="preset-btn" data-height="600">600px</button>
+                        <button class="preset-btn" data-height="800">800px</button>
+                        <button class="preset-btn" data-height="1080">1080px</button>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="qualityRange">
+                        <i class="fas fa-star"></i> Quality: 
+                        <span class="range-value" id="qualityValue">80%</span>
+                    </label>
+                    <input type="range" id="qualityRange" min="1" max="100" value="80">
+                </div>
+                
+                <div class="control-group">
+                    <label for="formatSelect">
+                        <i class="fas fa-file-image"></i> Output Format:
+                    </label>
+                    <select id="formatSelect">
+                        <option value="jpeg">JPEG (Best for photos)</option>
+                        <option value="png">PNG (Lossless quality)</option>
+                        <option value="webp">WebP (Modern format)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="preview-container" id="photoPreviewContainer">
+                <div class="image-preview">
+                    <h3><i class="fas fa-image"></i> Original Photo</h3>
+                    <div class="preview-img-container">
+                        <div class="preview-placeholder">
+                            <i class="fas fa-image"></i>
+                            <p>Original photo will appear here</p>
+                        </div>
+                    </div>
+                    <div class="preview-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">File Size</span>
+                            <span class="stat-value">1.2 MB</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Dimensions</span>
+                            <span class="stat-value">1920×1080</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Format</span>
+                            <span class="stat-value">JPEG</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Color Depth</span>
+                            <span class="stat-value">24-bit</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-preview">
+                    <h3><i class="fas fa-magic"></i> Processed Photo</h3>
+                    <div class="preview-img-container">
+                        <div class="preview-placeholder">
+                            <i class="fas fa-image"></i>
+                            <p>Processed photo will appear here</p>
+                        </div>
+                    </div>
+                    <div class="preview-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">File Size</span>
+                            <span class="stat-value">450 KB</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Dimensions</span>
+                            <span class="stat-value">1200×675</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Size Saved</span>
+                            <span class="stat-value">62.5%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Quality</span>
+                            <span class="stat-value">80%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Download Section -->
+            <div class="download-section">
+                <h3><i class="fas fa-download"></i> Download Your Processed Photo</h3>
+                <p>Your image has been successfully processed and is ready for download.</p>
+                <a href="#" class="download-btn">
+                    <i class="fas fa-download"></i> Download Resized Photo
+                </a>
+                <p class="file-format">Format: JPEG | Size: 450 KB</p>
+            </div>
+        </div>
+
+        <!-- Middle Ad Container -->
+        <div class="ad-container fade-in">
+            <span class="ad-label">SPONSORED CONTENT</span>
+            <div class="ad-placeholder">
+                <i class="fas fa-ad"></i>
+                <p>Ad Space for Google AdSense</p>
+                <p class="ad-code-hint">Insert your AdSense ad unit code here</p>
+                <!-- Google AdSense Ad Unit -->
+                <!-- 
+                <ins class="adsbygoogle"
+                    style="display:block"
+                    data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                    data-ad-slot="XXXXXXXXXX"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+                -->
+            </div>
+        </div>
+
+        <!-- Signature Resizer Tool -->
+        <div id="signatureResizerTool" class="tool-container fade-in" style="display: none;">
+            <div class="free-badge">100% FREE</div>
+            <div class="tool-header">
+                <h2 class="tool-title">
+                    <span class="tool-title-icon"><i class="fas fa-signature"></i></span> 
+                    Signature Resizer
+                </h2>
+                <div class="tool-actions">
+                    <button class="btn btn-secondary" id="resetSigBtn">
+                        <i class="fas fa-redo btn-icon"></i> Reset
+                    </button>
+                    <button class="btn" id="resizeSigBtn">
+                        <i class="fas fa-magic btn-icon"></i> Process Signature
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tutorial">
+                <h4><i class="fas fa-lightbulb tutorial-icon"></i> How to Resize Signatures</h4>
+                <p>1. Upload your signature image (scanned or digital)<br>
+                2. Adjust dimensions and background settings<br>
+                3. Click "Process Signature" to optimize your signature<br>
+                4. Download in PNG format for transparent backgrounds</p>
+            </div>
+            
+            <div id="signatureUploadArea" class="upload-area">
+                <div class="upload-icon">
+                    <i class="fas fa-file-signature"></i>
+                </div>
+                <p class="upload-text">Drag & drop your signature here or click to browse</p>
+                <button class="btn btn-secondary" id="signatureBrowseBtn">
+                    <i class="fas fa-folder-open btn-icon"></i> Select Signature
+                </button>
+                <p class="file-info">Supports JPG, PNG, WebP (Max 5MB)</p>
+                <input type="file" id="signatureFileInput" accept="image/*" style="display: none;">
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <label for="sigWidthInput">
+                        <i class="fas fa-arrows-alt-h"></i> Width (px): 
+                        <span class="range-value" id="sigWidthValue">Auto</span>
+                    </label>
+                    <input type="number" id="sigWidthInput" placeholder="Auto">
+                    <div class="dimension-presets">
+                        <button class="preset-btn" data-width="300">300px</button>
+                        <button class="preset-btn" data-width="500">500px</button>
+                        <button class="preset-btn" data-width="800">800px</button>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="sigHeightInput">
+                        <i class="fas fa-arrows-alt-v"></i> Height (px): 
+                        <span class="range-value" id="sigHeightValue">Auto</span>
+                    </label>
+                    <input type="number" id="sigHeightInput" placeholder="Auto">
+                    <div class="dimension-presets">
+                        <button class="preset-btn" data-height="100">100px</button>
+                        <button class="preset-btn" data-height="200">200px</button>
+                        <button class="preset-btn" data-height="300">300px</button>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="sigTransparency">
+                        <i class="fas fa-adjust"></i> Transparency: 
+                        <span class="range-value" id="transparencyValue">100%</span>
+                    </label>
+                    <input type="range" id="sigTransparency" min="0" max="100" value="100">
+                </div>
+                
+                <div class="control-group">
+                    <label for="sigBgColor">
+                        <i class="fas fa-palette"></i> Background:
+                    </label>
+                    <select id="sigBgColor">
+                        <option value="transparent">Transparent</option>
+                        <option value="white">White</option>
+                        <option value="black">Black</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="preview-container" id="signaturePreviewContainer">
+                <div class="image-preview">
+                    <h3><i class="fas fa-signature"></i> Original Signature</h3>
+                    <div class="preview-img-container">
+                        <div class="preview-placeholder">
+                            <i class="fas fa-signature"></i>
+                            <p>Original signature will appear here</p>
+                        </div>
+                    </div>
+                    <div class="preview-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">File Size</span>
+                            <span class="stat-value">850 KB</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Dimensions</span>
+                            <span class="stat-value">1200×400</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Format</span>
+                            <span class="stat-value">PNG</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-preview">
+                    <h3><i class="fas fa-magic"></i> Processed Signature</h3>
+                    <div class="preview-img-container">
+                        <div class="preview-placeholder">
+                            <i class="fas fa-signature"></i>
+                            <p>Processed signature will appear here</p>
+                        </div>
+                    </div>
+                    <div class="preview-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">File Size</span>
+                            <span class="stat-value">120 KB</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Dimensions</span>
+                            <span class="stat-value">600×200</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Transparency</span>
+                            <span class="stat-value">100%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Background</span>
+                            <span class="stat-value">Transparent</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Download Section -->
+            <div class="download-section">
+                <h3><i class="fas fa-download"></i> Download Your Optimized Signature</h3>
+                <p>Your signature has been processed and is ready for download in PNG format.</p>
+                <a href="#" class="download-btn">
+                    <i class="fas fa-download"></i> Download Signature
+                </a>
+                <p class="file-format">Format: PNG | Size: 120 KB</p>
+            </div>
+        </div>
+
+        <!-- Image Compressor Tool -->
+        <div id="imageCompressorTool" class="tool-container fade-in" style="display: none;">
+            <div class="free-badge">100% FREE</div>
+            <div class="tool-header">
+                <h2 class="tool-title">
+                    <span class="tool-title-icon"><i class="fas fa-compress-alt"></i></span> 
+                    Image Compressor
+                </h2>
+                <div class="tool-actions">
+                    <button class="btn btn-secondary" id="resetCompressorBtn">
+                        <i class="fas fa-redo btn-icon"></i> Reset
+                    </button>
+                    <button class="btn btn-success" id="compressBtn">
+                        <i class="fas fa-tachometer-alt btn-icon"></i> Compress Image
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tutorial">
+                <h4><i class="fas fa-lightbulb tutorial-icon"></i> How to Compress Images</h4>
+                <p>1. Upload your image using the button below<br>
+                2. Adjust the compression level to balance quality and file size<br>
+                3. Click "Compress Image" to process your file<br>
+                4. Download the optimized version with reduced file size</p>
+            </div>
+            
+            <div id="compressorUploadArea" class="upload-area">
+                <div class="upload-icon">
+                    <i class="fas fa-file-archive"></i>
+                </div>
+                <p class="upload-text">Drag & drop your image here or click to browse</p>
+                <button class="btn btn-secondary" id="compressorBrowseBtn">
+                    <i class="fas fa-folder-open btn-icon"></i> Select Image
+                </button>
+                <p class="file-info">Supports JPG, PNG, WebP (Max 15MB)</p>
+                <input type="file" id="compressorFileInput" accept="image/*" style="display: none;">
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <label for="compressionLevel">
+                        <i class="fas fa-tachometer-alt"></i> Compression Level: 
+                        <span class="range-value" id="compressionValue">70%</span>
+                    </label>
+                    <input type="range" id="compressionLevel" min="1" max="100" value="70">
+                    <div class="dimension-presets" style="margin-top: 15px;">
+                        <button class="preset-btn" data-value="30">Low (30%)</button>
+                        <button class="preset-btn" data-value="70">Medium (70%)</button>
+                        <button class="preset-btn" data-value="90">High (90%)</button>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="compressorFormatSelect">
+                        <i class="fas fa-file-image"></i> Output Format:
+                    </label>
+                    <select id="compressorFormatSelect">
+                        <option value="jpeg">JPEG (Best compression)</option>
+                        <option value="png">PNG (Lossless quality)</option>
+                        <option value="webp">WebP (Modern format)</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="maxFileSize">
+                        <i class="fas fa-weight-hanging"></i> Max File Size (KB):
+                        <span class="tooltip">ⓘ
+                            <span class="tooltip-text">Set a target file size (optional). The compressor will adjust quality to meet this size.</span>
+                        </span>
+                    </label>
+                    <input type="number" id="maxFileSize" placeholder="Optional (e.g., 300)">
+                </div>
+            </div>
+            
+            <div class="preview-container" id="compressorPreviewContainer">
+                <div class="image-preview">
+                    <h3><i class="fas fa-image"></i> Original Image</h3>
+                    <div class="preview-img-container">
+                        <div class="preview-placeholder">
+                            <i class="fas fa-image"></i>
+                            <p>Original image will appear here</p>
+                        </div>
+                    </div>
+                    <div class="preview-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">File Size</span>
+                            <span class="stat-value">3.8 MB</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Dimensions</span>
+                            <span class="stat-value">1920×1280</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Format</span>
+                            <span class="stat-value">JPEG</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-preview">
+                    <h3><i class="fas fa-compress-alt"></i> Compressed Image</h3>
+                    <div class="preview-img-container">
+                        <div class="preview-placeholder">
+                            <i class="fas fa-compress-alt"></i>
+                            <p>Compressed image will appear here</p>
+                        </div>
+                    </div>
+                    <div class="preview-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">File Size</span>
+                            <span class="stat-value">650 KB</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Dimensions</span>
+                            <span class="stat-value">1920×1280</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Size Saved</span>
+                            <span class="stat-value">83%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Compression</span>
+                            <span class="stat-value">70%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Download Section -->
+            <div class="download-section">
+                <h3><i class="fas fa-download"></i> Download Your Compressed Image</h3>
+                <p>Your image has been compressed while maintaining visual quality.</p>
+                <a href="#" class="download-btn">
+                    <i class="fas fa-download"></i> Download Compressed Image
+                </a>
+                <p class="file-format">Format: JPEG | Size: 650 KB | Saved: 83%</p>
+            </div>
+        </div>
+
+        <!-- PDF Converter Tool -->
+        <div id="pdfConverterTool" class="tool-container fade-in" style="display: none;">
+            <div class="free-badge">100% FREE</div>
+            <div class="tool-header">
+                <h2 class="tool-title">
+                    <span class="tool-title-icon"><i class="fas fa-file-pdf"></i></span> 
+                    Image to PDF Converter
+                </h2>
+                <div class="tool-actions">
+                    <button class="btn btn-secondary" id="resetPdfBtn">
+                        <i class="fas fa-redo btn-icon"></i> Reset
+                    </button>
+                    <button class="btn btn-success" id="convertPdfBtn">
+                        <i class="fas fa-sync-alt btn-icon"></i> Convert to PDF
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tutorial">
+                <h4><i class="fas fa-lightbulb tutorial-icon"></i> How to Convert Images to PDF</h4>
+                <p>1. Upload your images using the button below or drag & drop them<br>
+                2. Arrange images in the desired order (drag to reorder)<br>
+                3. Configure PDF settings like page size and orientation<br>
+                4. Click "Convert to PDF" to generate your document<br>
+                5. Download the PDF file</p>
+            </div>
+            
+            <div id="pdfUploadArea" class="upload-area">
+                <div class="upload-icon">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <p class="upload-text">Drag & drop your images here or click to browse</p>
+                <button class="btn btn-secondary" id="pdfBrowseBtn">
+                    <i class="fas fa-folder-open btn-icon"></i> Select Images
+                </button>
+                <p class="file-info">Supports JPG, PNG, WebP (Max 5MB per image)</p>
+                <input type="file" id="pdfFileInput" accept="image/*" multiple style="display: none;">
+            </div>
+            
+            <div id="pdfThumbnails" class="image-thumbnails">
+                <!-- Thumbnails will be added here dynamically -->
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <label for="pdfPageSize">
+                        <i class="fas fa-ruler"></i> Page Size:
+                    </label>
+                    <select id="pdfPageSize">
+                        <option value="a4">A4 (210×297mm)</option>
+                        <option value="letter">Letter (8.5×11in)</option>
+                        <option value="legal">Legal (8.5×14in)</option>
+                        <option value="a3">A3 (297×420mm)</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="pdfOrientation">
+                        <i class="fas fa-undo"></i> Orientation:
+                    </label>
+                    <select id="pdfOrientation">
+                        <option value="portrait">Portrait</option>
+                        <option value="landscape">Landscape</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="pdfMargin">
+                        <i class="fas fa-border-all"></i> Margin (mm): 
+                        <span class="range-value" id="marginValue">10</span>
+                    </label>
+                    <input type="range" id="pdfMargin" min="0" max="30" value="10">
+                </div>
+                
+                <div class="control-group">
+                    <label for="pdfQuality">
+                        <i class="fas fa-star"></i> Image Quality: 
+                        <span class="range-value" id="pdfQualityValue">80%</span>
+                    </label>
+                    <input type="range" id="pdfQuality" min="10" max="100" value="80">
+                </div>
+            </div>
+            
+            <div class="pdf-settings">
+                <div class="pdf-setting-group">
+                    <label>
+                        <input type="checkbox" id="pdfAddPageNumbers" checked>
+                        Add page numbers
+                    </label>
+                </div>
+                <div class="pdf-setting-group">
+                    <label>
+                        <input type="checkbox" id="pdfAddTimestamp">
+                        Add timestamp to filename
+                    </label>
+                </div>
+            </div>
+            
+            <div class="preview-container">
+                <div class="image-preview" style="flex: 2;">
+                    <h3><i class="fas fa-file-pdf"></i> PDF Preview</h3>
+                    <div class="pdf-preview-container">
+                        <div id="pdfPreviewPlaceholder" class="pdf-placeholder">
+                            <i class="fas fa-file-pdf"></i>
+                            <p>Your PDF preview will appear here after conversion</p>
+                        </div>
+                        <iframe id="pdfPreview" class="pdf-preview" style="display: none;"></iframe>
+                    </div>
+                </div>
+                
+                <div class="image-preview">
+                    <h3><i class="fas fa-info-circle"></i> Conversion Info</h3>
+                    <div class="preview-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Number of Images</span>
+                            <span class="stat-value" id="imageCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Estimated Pages</span>
+                            <span class="stat-value" id="pageCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Page Size</span>
+                            <span class="stat-value" id="pageSizeInfo">A4</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Orientation</span>
+                            <span class="stat-value" id="orientationInfo">Portrait</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Download Section -->
+            <div class="download-section" id="pdfDownloadSection" style="display: none;">
+                <h3><i class="fas fa-download"></i> Download Your PDF Document</h3>
+                <p>Your images have been successfully converted to a PDF document.</p>
+                <a href="#" class="download-btn" id="downloadPdfBtn">
+                    <i class="fas fa-download"></i> Download PDF Document
+                </a>
+                <p class="file-format" id="pdfFileInfo">Format: PDF | Pages: 0 | Size: 0 KB</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Ad Container -->
+    <div class="ad-container fade-in">
+        <span class="ad-label">ADVERTISEMENT</span>
+        <div class="ad-placeholder">
+            <i class="fas fa-ad"></i>
+            <p>Ad Space for Google AdSense</p>
+            <p class="ad-code-hint">Insert your AdSense ad unit code here</p>
+            <!-- Google AdSense Ad Unit -->
+            <!-- 
+            <ins class="adsbygoogle"
+                style="display:block"
+                data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                data-ad-slot="XXXXXXXXXX"
+                data-ad-format="auto"
+                data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+            -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ProImage Tools</h3>
+                    <p style="margin-bottom: 25px; line-height: 1.7;">Professional image processing tools for everyone. Fast, secure, and completely free!</p>
+                    <p><i class="fas fa-check-circle"></i> 100% Free Forever</p>
+                    <p><i class="fas fa-lock"></i> No Premium Options</p>
+                    <p><i class="fas fa-shield-alt"></i> Privacy Focused</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Tools</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-image"></i> Photo Resizer</a></li>
+                        <li><a href="#"><i class="fas fa-signature"></i> Signature Resizer</a></li>
+                        <li><a href="#"><i class="fas fa-compress-alt"></i> Image Compressor</a></li>
+                        <li><a href="#"><i class="fas fa-file-pdf"></i> PDF Converter</a></li>
+                        <li><a href="#"><i class="fas fa-exchange-alt"></i> Format Converter</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-book"></i> Tutorials</a></li>
+                        <li><a href="#"><i class="fas fa-question-circle"></i> Help Center</a></li>
+                        <li><a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+                        <li><a href="#"><i class="fas fa-file-alt"></i> Terms of Service</a></li>
+                        <li><a href="#"><i class="fas fa-blog"></i> Developer Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                        <li><a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
+                        <li><a href="#"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                        <li><a href="#"><i class="fas fa-rss"></i> Newsletter</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 ProImage Tools. All rights reserved. | 100% Free Forever | Made with <i class="fas fa-heart" style="color: #e74c3c;"></i> for Creators</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize jsPDF
+            const { jsPDF } = window.jspdf;
+            
+            // Theme Toggle
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const icon = themeToggle.querySelector('i');
+                if (document.body.classList.contains('dark-mode')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
+            
+            // Tool Switcher
+            const toolButtons = document.querySelectorAll('.tool-button');
+            const toolContainers = document.querySelectorAll('.tool-container');
+            
+            function setActiveTool(activeBtn) {
+                toolButtons.forEach(btn => btn.classList.remove('active'));
+                toolContainers.forEach(container => container.style.display = 'none');
+                
+                activeBtn.classList.add('active');
+                document.getElementById(activeBtn.id.replace('Btn', 'Tool')).style.display = 'block';
+            }
+            
+            toolButtons.forEach(btn => {
+                btn.addEventListener('click', () => setActiveTool(btn));
+            });
+            
+            // Initialize aspect ratio lock
+            const aspectLock = document.getElementById('aspectLock');
+            if (aspectLock) {
+                aspectLock.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    this.textContent = this.classList.contains('active') ? '🔒' : '🔓';
+                });
+            }
+            
+            // Update quality value display
+            const qualityRange = document.getElementById('qualityRange');
+            if (qualityRange) {
+                const qualityValue = document.getElementById('qualityValue');
+                qualityRange.addEventListener('input', () => {
+                    qualityValue.textContent = `${qualityRange.value}%`;
+                });
+            }
+            
+            // Update transparency value display
+            const sigTransparency = document.getElementById('sigTransparency');
+            if (sigTransparency) {
+                const transparencyValue = document.getElementById('transparencyValue');
+                sigTransparency.addEventListener('input', () => {
+                    transparencyValue.textContent = `${sigTransparency.value}%`;
+                });
+            }
+            
+            // Update compression value display
+            const compressionLevel = document.getElementById('compressionLevel');
+            if (compressionLevel) {
+                const compressionValue = document.getElementById('compressionValue');
+                compressionLevel.addEventListener('input', () => {
+                    compressionValue.textContent = `${compressionLevel.value}%`;
+                });
+            }
+            
+            // Dimension presets for photo tool
+            document.querySelectorAll('#photoResizerTool .preset-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (btn.dataset.width) {
+                        document.getElementById('widthInput').value = btn.dataset.width;
+                        document.getElementById('widthValue').textContent = btn.dataset.width;
+                    }
+                    if (btn.dataset.height) {
+                        document.getElementById('heightInput').value = btn.dataset.height;
+                        document.getElementById('heightValue').textContent = btn.dataset.height;
+                    }
+                });
+            });
+            
+            // Dimension presets for signature tool
+            document.querySelectorAll('#signatureResizerTool .preset-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (btn.dataset.width) {
+                        document.getElementById('sigWidthInput').value = btn.dataset.width;
+                        document.getElementById('sigWidthValue').textContent = btn.dataset.width;
+                    }
+                    if (btn.dataset.height) {
+                        document.getElementById('sigHeightInput').value = btn.dataset.height;
+                        document.getElementById('sigHeightValue').textContent = btn.dataset.height;
+                    }
+                });
+            });
+            
+            // Compression presets
+            document.querySelectorAll('#imageCompressorTool .preset-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    compressionLevel.value = btn.dataset.value;
+                    compressionValue.textContent = `${btn.dataset.value}%`;
+                });
+            });
+            
+            // Simulate processing for demo purposes
+            const processButtons = document.querySelectorAll('#resizeBtn, #resizeSigBtn, #compressBtn');
+            processButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const container = this.closest('.tool-container');
+                    const downloadSection = container.querySelector('.download-section');
+                    
+                    // Show processing animation
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                    this.disabled = true;
+                    
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="fas fa-check"></i> Done!';
+                        this.disabled = false;
+                        downloadSection.style.display = 'block';
+                        
+                        // Reset button after delay
+                        setTimeout(() => {
+                            if(this.id === 'resizeBtn') {
+                                this.innerHTML = '<i class="fas fa-magic"></i> Process Image';
+                            } else if(this.id === 'resizeSigBtn') {
+                                this.innerHTML = '<i class="fas fa-magic"></i> Process Signature';
+                            } else {
+                                this.innerHTML = '<i class="fas fa-tachometer-alt"></i> Compress Image';
+                            }
+                        }, 2000);
+                    }, 1500);
+                });
+            });
+            
+            // Reset buttons
+            const resetButtons = document.querySelectorAll('#resetPhotoBtn, #resetSigBtn, #resetCompressorBtn');
+            resetButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const container = this.closest('.tool-container');
+                    const fileInput = container.querySelector('input[type="file"]');
+                    const downloadSection = container.querySelector('.download-section');
+                    
+                    fileInput.value = '';
+                    downloadSection.style.display = 'none';
+                    
+                    // Reset inputs
+                    const inputs = container.querySelectorAll('input:not([type="file"]), select');
+                    inputs.forEach(input => {
+                        if(input.id === 'qualityRange') input.value = 80;
+                        else if(input.id === 'sigTransparency') input.value = 100;
+                        else if(input.id === 'compressionLevel') input.value = 70;
+                        else if(input.id === 'formatSelect' || input.id === 'compressorFormatSelect') input.value = 'jpeg';
+                        else if(input.id === 'sigBgColor') input.value = 'transparent';
+                        else input.value = '';
+                    });
+                    
+                    // Reset value displays
+                    if(container.id === 'photoResizerTool') {
+                        document.getElementById('widthValue').textContent = 'Auto';
+                        document.getElementById('heightValue').textContent = 'Auto';
+                        document.getElementById('qualityValue').textContent = '80%';
+                    } else if(container.id === 'signatureResizerTool') {
+                        document.getElementById('sigWidthValue').textContent = 'Auto';
+                        document.getElementById('sigHeightValue').textContent = 'Auto';
+                        document.getElementById('transparencyValue').textContent = '100%';
+                    } else {
+                        document.getElementById('compressionValue').textContent = '70%';
+                    }
+                });
+            });
+            
+            // File upload handling for demo
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            fileInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    const container = this.closest('.tool-container');
+                    const downloadSection = container.querySelector('.download-section');
+                    downloadSection.style.display = 'none';
+                });
+            });
+            
+            // PDF Converter Functionality
+            const pdfFileInput = document.getElementById('pdfFileInput');
+            const pdfBrowseBtn = document.getElementById('pdfBrowseBtn');
+            const pdfUploadArea = document.getElementById('pdfUploadArea');
+            const pdfThumbnails = document.getElementById('pdfThumbnails');
+            const convertPdfBtn = document.getElementById('convertPdfBtn');
+            const resetPdfBtn = document.getElementById('resetPdfBtn');
+            const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+            const pdfDownloadSection = document.getElementById('pdfDownloadSection');
+            const pdfPreview = document.getElementById('pdfPreview');
+            const pdfPreviewPlaceholder = document.getElementById('pdfPreviewPlaceholder');
+            const imageCount = document.getElementById('imageCount');
+            const pageCount = document.getElementById('pageCount');
+            const pageSizeInfo = document.getElementById('pageSizeInfo');
+            const orientationInfo = document.getElementById('orientationInfo');
+            const pdfFileInfo = document.getElementById('pdfFileInfo');
+            
+            let uploadedImages = [];
+            let generatedPdf = null;
+            
+            // Browse button click triggers file input
+            pdfBrowseBtn.addEventListener('click', () => {
+                pdfFileInput.click();
+            });
+            
+            // File input change handler
+            pdfFileInput.addEventListener('change', (e) => {
+                handleFileSelection(e.target.files);
+                e.target.value = ''; // Reset to allow selecting same files again
+            });
+            
+            // Drag and drop handling
+            pdfUploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                pdfUploadArea.classList.add('active');
+            });
+            
+            pdfUploadArea.addEventListener('dragleave', () => {
+                pdfUploadArea.classList.remove('active');
+            });
+            
+            pdfUploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                pdfUploadArea.classList.remove('active');
+                if (e.dataTransfer.files.length > 0) {
+                    handleFileSelection(e.dataTransfer.files);
+                }
+            });
+            
+            // Handle selected files
+            function handleFileSelection(files) {
+                const imageFiles = Array.from(files).filter(file => 
+                    file.type.match('image.*') && 
+                    file.size <= 5 * 1024 * 1024 // 5MB limit
+                );
+                
+                if (imageFiles.length === 0) {
+                    alert('Please select valid image files (JPG, PNG, WebP) under 5MB each');
+                    return;
+                }
+                
+                imageFiles.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const imgData = e.target.result;
+                        uploadedImages.push({
+                            name: file.name,
+                            data: imgData,
+                            type: file.type
+                        });
+                        updateThumbnails();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+            
+            // Update thumbnails display
+            function updateThumbnails() {
+                pdfThumbnails.innerHTML = '';
+                imageCount.textContent = uploadedImages.length;
+                
+                uploadedImages.forEach((img, index) => {
+                    const thumbnailContainer = document.createElement('div');
+                    thumbnailContainer.className = 'thumbnail-container';
+                    thumbnailContainer.draggable = true;
+                    thumbnailContainer.dataset.index = index;
+                    
+                    const imgElement = document.createElement('img');
+                    imgElement.src = img.data;
+                    imgElement.alt = `Image ${index + 1}`;
+                    
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'delete-thumbnail';
+                    deleteBtn.innerHTML = '&times;';
+                    deleteBtn.onclick = () => {
+                        uploadedImages.splice(index, 1);
+                        updateThumbnails();
+                    };
+                    
+                    const pageNumber = document.createElement('div');
+                    pageNumber.className = 'page-number';
+                    pageNumber.textContent = `Page ${index + 1}`;
+                    
+                    thumbnailContainer.appendChild(imgElement);
+                    thumbnailContainer.appendChild(deleteBtn);
+                    thumbnailContainer.appendChild(pageNumber);
+                    pdfThumbnails.appendChild(thumbnailContainer);
+                    
+                    // Add drag and drop for reordering
+                    thumbnailContainer.addEventListener('dragstart', (e) => {
+                        e.dataTransfer.setData('text/plain', index);
+                        setTimeout(() => thumbnailContainer.classList.add('dragging'), 0);
+                    });
+                    
+                    thumbnailContainer.addEventListener('dragend', () => {
+                        thumbnailContainer.classList.remove('dragging');
+                    });
+                    
+                    thumbnailContainer.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                    });
+                    
+                    thumbnailContainer.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                        const toIndex = parseInt(thumbnailContainer.dataset.index);
+                        
+                        if (fromIndex !== toIndex) {
+                            // Reorder the images array
+                            const movedItem = uploadedImages.splice(fromIndex, 1)[0];
+                            uploadedImages.splice(toIndex, 0, movedItem);
+                            updateThumbnails();
+                        }
+                    });
+                });
+            }
+            
+            // PDF Settings
+            const pdfMargin = document.getElementById('pdfMargin');
+            const marginValue = document.getElementById('marginValue');
+            pdfMargin.addEventListener('input', () => {
+                marginValue.textContent = pdfMargin.value;
+            });
+            
+            const pdfQuality = document.getElementById('pdfQuality');
+            const pdfQualityValue = document.getElementById('pdfQualityValue');
+            pdfQuality.addEventListener('input', () => {
+                pdfQualityValue.textContent = `${pdfQuality.value}%`;
+            });
+            
+            // Convert to PDF button
+            convertPdfBtn.addEventListener('click', function() {
+                if (uploadedImages.length === 0) {
+                    alert('Please upload at least one image');
+                    return;
+                }
+                
+                // Show processing state
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                this.disabled = true;
+                
+                // Get PDF settings
+                const pageSize = document.getElementById('pdfPageSize').value;
+                const orientation = document.getElementById('pdfOrientation').value;
+                const margin = parseInt(document.getElementById('pdfMargin').value);
+                const quality = parseInt(document.getElementById('pdfQuality').value) / 100;
+                const addPageNumbers = document.getElementById('pdfAddPageNumbers').checked;
+                
+                // Set page size
+                let pageWidth, pageHeight;
+                switch(pageSize) {
+                    case 'a4':
+                        pageWidth = 210;
+                        pageHeight = 297;
+                        break;
+                    case 'letter':
+                        pageWidth = 215.9;
+                        pageHeight = 279.4;
+                        break;
+                    case 'legal':
+                        pageWidth = 215.9;
+                        pageHeight = 355.6;
+                        break;
+                    case 'a3':
+                        pageWidth = 297;
+                        pageHeight = 420;
+                        break;
+                    default:
+                        pageWidth = 210;
+                        pageHeight = 297;
+                }
+                
+                // Swap dimensions for landscape
+                if (orientation === 'landscape') {
+                    [pageWidth, pageHeight] = [pageHeight, pageWidth];
+                }
+                
+                // Create PDF
+                const pdf = new jsPDF({
+                    orientation: orientation,
+                    unit: 'mm',
+                    format: [pageWidth, pageHeight]
+                });
+                
+                // Set metadata
+                const timestamp = new Date().toISOString().slice(0, 16).replace('T', ' ');
+                const filename = document.getElementById('pdfAddTimestamp').checked ? 
+                    `images_${timestamp}.pdf` : 'images.pdf';
+                
+                // Add images to PDF
+                uploadedImages.forEach((img, index) => {
+                    if (index > 0) pdf.addPage();
+                    
+                    // Calculate image dimensions with margin
+                    const maxWidth = pageWidth - (margin * 2);
+                    const maxHeight = pageHeight - (margin * 2);
+                    
+                    // Add image
+                    pdf.addImage(img.data, img.type.split('/')[1].toUpperCase(), 
+                        margin, margin, maxWidth, maxHeight, null, 'FAST', 0);
+                    
+                    // Add page number if enabled
+                    if (addPageNumbers) {
+                        pdf.setFontSize(10);
+                        pdf.text(`Page ${index + 1}`, 
+                            pageWidth - margin - 10, 
+                            pageHeight - margin + 5);
+                    }
+                });
+                
+                // Generate PDF
+                generatedPdf = pdf.output('blob');
+                
+                // Update preview
+                const pdfUrl = URL.createObjectURL(generatedPdf);
+                pdfPreview.src = pdfUrl;
+                pdfPreview.style.display = 'block';
+                pdfPreviewPlaceholder.style.display = 'none';
+                
+                // Update info
+                pageCount.textContent = uploadedImages.length;
+                pageSizeInfo.textContent = pageSize.toUpperCase();
+                orientationInfo.textContent = orientation.charAt(0).toUpperCase() + orientation.slice(1);
+                
+                // Enable download
+                downloadPdfBtn.href = pdfUrl;
+                downloadPdfBtn.download = filename;
+                
+                // Update file info
+                const fileSize = Math.round(generatedPdf.size / 1024);
+                pdfFileInfo.textContent = `Format: PDF | Pages: ${uploadedImages.length} | Size: ${fileSize} KB`;
+                
+                // Show download section
+                pdfDownloadSection.style.display = 'block';
+                
+                // Reset button
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-sync-alt"></i> Convert to PDF';
+                    this.disabled = false;
+                }, 1000);
+            });
+            
+            // Reset PDF tool
+            resetPdfBtn.addEventListener('click', () => {
+                uploadedImages = [];
+                pdfThumbnails.innerHTML = '';
+                pdfDownloadSection.style.display = 'none';
+                pdfPreview.style.display = 'none';
+                pdfPreviewPlaceholder.style.display = 'block';
+                imageCount.textContent = '0';
+                pageCount.textContent = '0';
+                pdfFileInput.value = '';
+            });
+        });
+    </script>
+</body>
+</html>
