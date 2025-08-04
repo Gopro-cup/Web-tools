@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProImage Tools - Free Online Image Processing Suite</title>
+    <meta name="description" content="Free online image tools - resize photos, optimize signatures, compress images & convert to PDF. Professional tools with no registration required.">
+    <meta name="keywords" content="image resizer, photo compressor, pdf converter, image tools, free image processing">
+    <meta name="author" content="ProImage Tools">
+    <meta name="robots" content="index, follow">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --primary-dark: #1a252f;
+            --accent: #3498db;
+            --success: #27ae60;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --card-bg: rgba(255, 255, 255, 0.97);
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+            --radius: 8px;
+            --header-height: 80px;
+        }
+        
+        .dark-mode {
+            --primary: #2c3e50;
+            --primary-dark: #1a252f;
+            --light: #1a202c;
+            --dark: #f8fafc;
+            --gray: #a0aec0;
+            --card-bg: rgba(30, 41, 59, 0.97);
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: var(--transition);
+            font-weight: 400;
+        }
+        
+        body.dark-mode {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            height: var(--header-height);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        body.dark-mode header {
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--primary);
+            transition: var(--transition);
+            letter-spacing: -0.5px;
+        }
+        
+        .logo-icon {
+            margin-right: 12px;
+            font-size: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .logo:hover {
+            transform: translateY(-2px);
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            transition: var(--transition);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        
+        .nav-menu a:hover {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+        
+        .nav-menu a.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .theme-toggle {
+            background: var(--light);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--gray);
+            font-size: 1.2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .theme-toggle:hover {
+            background: var(--primary);
+            color: white;
+            transform: rotate(15deg);
+        }
+        
+        /* Main Content */
+        main {
+            padding-top: 50px;
+            padding-bottom: 80px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 50px;
+            padding: 80px 0;
+        }
+        
+        .hero-content {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .hero-image {
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .hero h1 {
+            font-size: 3.2rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+            font-weight: 800;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--gray);
+            margin: 0 0 35px;
+            line-height: 1.7;
+            max-width: 600px;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        /* Features */
+        .section-header {
+            text-align: center;
+            margin: 80px 0 50px;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .section-header p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+        
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 35px 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        body.dark-mode .feature-card {
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            font-size: 46px;
+            margin-bottom: 25px;
+            color: var(--primary);
+            height: 90px;
+            width: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(67, 97, 238, 0.05);
+            border-radius: 50%;
+            margin-left: auto;
+            margin-right: auto;
+            transition: var(--transition);
+        }
+        
+        .feature-card:hover .feature-icon {
+            background: rgba(67, 97, 238, 0.1);
+            transform: scale(1.05);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+            font-weight: 700;
+        }
+        
+        .feature-card p {
+            font-size: 1rem;
+            color: var(--gray);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+        
+        .tool-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 35px 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        body.dark-mode .tool-card {
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+        }
+        
+        .tool-icon {
+            font-size: 56px;
+            margin-bottom: 25px;
+            color: var(--primary);
+            height: 90px;
+            width: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(67, 97, 238, 0.05);
+            border-radius: 50%;
+            margin-left: auto;
+            margin-right: auto;
+            transition: var(--transition);
+        }
+        
+        .tool-card:hover .tool-icon {
+            background: rgba(67, 97, 238, 0.1);
+            transform: scale(1.05);
+        }
+        
+        .tool-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+            font-weight: 700;
+        }
+        
+        .tool-card p {
+            font-size: 1rem;
+            color: var(--gray);
+            line-height: 1.7;
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+        
+        .free-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 80px 0;
+            margin: 80px 0;
+            border-radius: var(--radius);
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .stat-card {
+            padding: 30px 20px;
+        }
+        
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .stat-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            margin: 80px 0;
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .testimonial-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+        }
+        
+        body.dark-mode .testimonial-card {
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .author-info h4 {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .author-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* FAQ Section */
+        .faq-section {
+            margin: 80px 0;
+        }
+        
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .faq-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        body.dark-mode .faq-card {
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .faq-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .faq-card h3 i {
+            color: var(--accent);
+        }
+        
+        .faq-card p {
+            color: var(--gray);
+            line-height: 1.7;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--accent), #1a73e8);
+            color: white;
+            padding: 80px 0;
+            margin: 80px 0;
+            border-radius: var(--radius);
+            text-align: center;
+        }
+        
+        .cta-content {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .cta-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .cta-content p {
+            font-size: 1.2rem;
+            margin-bottom: 35px;
+            opacity: 0.9;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 14px 26px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+        }
+        
+        body.dark-mode .btn-secondary {
+            background: #1e293b;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gray);
+            color: white;
+        }
+        
+        .btn-accent {
+            background: var(--accent);
+        }
+        
+        .btn-accent:hover {
+            background: #2980b9;
+        }
+        
+        .btn-success {
+            background: var(--success);
+        }
+        
+        .btn-success:hover {
+            background: #219653;
+        }
+        
+        .btn-light {
+            background: white;
+            color: var(--primary);
+        }
+        
+        .btn-light:hover {
+            background: #f0f0f0;
+            color: var(--primary-dark);
+        }
+        
+        .btn-icon {
+            font-size: 1.15rem;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 60px 0 30px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 35px;
+            margin-bottom: 50px;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            color: var(--accent);
+            font-weight: 700;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+        
+        .footer-links a {
+            color: #a0aec0;
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.05rem;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 35px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #a0aec0;
+            font-size: 1rem;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: var(--transition);
+        }
+        
+        .social-links a:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(67, 97, 238, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 900px) {
+            .hero h1 {
+                font-size: 2.4rem;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero {
+                text-align: center;
+                flex-direction: column;
+            }
+            
+            .hero-content {
+                text-align: center;
+            }
+            
+            .hero p {
+                margin: 0 auto 35px;
+            }
+            
+            .cta-buttons {
+                justify-content: center;
+            }
+            
+            .section-header h2 {
+                font-size: 2.1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.9rem;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <span class="logo-icon"><i class="fas fa-crop-alt"></i></span>
+                    <span>ProImage Tools</span>
+                </a>
+                <div class="nav-links">
+                    <ul class="nav-menu">
+                        <li><a href="index.html" class="active">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#tools">Tools</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#testimonials">Testimonials</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Professional Image Tools for Everyone</h1>
+                <p>Resize, optimize, enhance, and convert your images with our powerful tools. All features are 100% free with no limitations. No registration required!</p>
+                <div class="cta-buttons">
+                    <a href="/photo-resize online.html" class="btn btn-accent pulse">
+                        <i class="fas fa-bolt btn-icon"></i> Get Started Free
+                    </a>
+                    <a href="#how-it-works" class="btn btn-secondary">
+                        <i class="fas fa-play-circle btn-icon"></i> How It Works
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="50" y="50" width="500" height="300" fill="#3498db" opacity="0.1" rx="20" />
+                    <rect x="100" y="100" width="150" height="150" fill="#3498db" opacity="0.3" rx="10" />
+                    <rect x="280" y="100" width="150" height="100" fill="#27ae60" opacity="0.3" rx="10" />
+                    <rect x="280" y="220" width="150" height="30" fill="#e74c3c" opacity="0.3" rx="5" />
+                    <circle cx="175" cy="275" r="30" fill="#f39c12" opacity="0.3" />
+                    <path d="M100 100 L150 150 L120 200 L70 180 Z" fill="#9b59b6" opacity="0.3" />
+                    <text x="300" y="360" text-anchor="middle" font-size="24" fill="#2c3e50">ProImage Tools Suite</text>
+                </svg>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features">
+            <div class="section-header">
+                <h2>Why Choose ProImage Tools?</h2>
+                <p>Our suite of professional tools helps you optimize your images quickly and efficiently</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Lightning Fast Processing</h3>
+                    <p>Optimize images in seconds with our powerful processing algorithms. No waiting in queues or delays.</p>
+                </div>
+                <div class="feature-card fade-in" style="animation-delay: 0.1s">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3>Privacy Focused</h3>
+                    <p>Your files are processed locally in your browser. We never upload your images to our servers.</p>
+                </div>
+                <div class="feature-card fade-in" style="animation-delay: 0.2s">
+                    <div class="feature-icon">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h3>Premium Quality</h3>
+                    <p>Professional-grade tools with advanced algorithms to maintain the highest quality output.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tools Section -->
+        <section id="tools">
+            <div class="section-header">
+                <h2>Our Powerful Tools</h2>
+                <p>Choose the perfect tool for your image processing needs</p>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card fade-in">
+                    <div class="free-badge">FREE</div>
+                    <div class="tool-icon">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <h3>Photo Resizer</h3>
+                    <p>Resize images to exact dimensions while maintaining quality with our advanced algorithms. Perfect for social media, websites, and print.</p>
+                    <a href="/photo-resize online.html" class="btn btn-secondary">
+                        <i class="fas fa-arrow-right btn-icon"></i> Use Tool
+                    </a>
+                </div>
+                <div class="tool-card fade-in" style="animation-delay: 0.1s">
+                    <div class="free-badge">FREE</div>
+                    <div class="tool-icon">
+                        <i class="fas fa-signature"></i>
+                    </div>
+                    <h3>Signature Optimizer</h3>
+                    <p>Resize and clean up signatures for professional documents. Create transparent backgrounds and perfect sizing.</p>
+                    <a href="/photo-resize online.html" class="btn btn-secondary">
+                        <i class="fas fa-arrow-right btn-icon"></i> Use Tool
+                    </a>
+                </div>
+                <div class="tool-card fade-in" style="animation-delay: 0.2s">
+                    <div class="free-badge">FREE</div>
+                    <div class="tool-icon">
+                        <i class="fas fa-compress-alt"></i>
+                    </div>
+                    <h3>Image Compressor</h3>
+                    <p>Reduce file sizes without visible quality loss using modern compression techniques. Perfect for websites and email attachments.</p>
+                    <a href="/photo-resize online.html" class="btn btn-secondary">
+                        <i class="fas fa-arrow-right btn-icon"></i> Use Tool
+                    </a>
+                </div>
+                <div class="tool-card fade-in" style="animation-delay: 0.3s">
+                    <div class="free-badge">FREE</div>
+                    <div class="tool-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <h3>PDF Converter</h3>
+                    <p>Convert images to PDF documents with customizable page settings and multiple image support. Create professional documents in seconds.</p>
+                    <a href="/photo-resize online.html" class="btn btn-secondary">
+                        <i class="fas fa-arrow-right btn-icon"></i> Use Tool
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="container">
+                <div class="section-header" style="color: white;">
+                    <h2>Trusted by Thousands of Users</h2>
+                    <p>Our tools have helped professionals, creatives, and businesses worldwide</p>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card fade-in">
+                        <div class="stat-number">250K+</div>
+                        <div class="stat-label">Monthly Users</div>
+                    </div>
+                    <div class="stat-card fade-in" style="animation-delay: 0.1s">
+                        <div class="stat-number">99.9%</div>
+                        <div class="stat-label">Uptime</div>
+                    </div>
+                    <div class="stat-card fade-in" style="animation-delay: 0.2s">
+                        <div class="stat-number">4.9/5</div>
+                        <div class="stat-label">User Rating</div>
+                    </div>
+                    <div class="stat-card fade-in" style="animation-delay: 0.3s">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Free Forever</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>Optimizing your images has never been easier - just three simple steps</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <div class="step-number">1</div>
+                    </div>
+                    <h3>Upload Your Image</h3>
+                    <p>Drag and drop your image or click to browse. We support JPG, PNG, WebP, and more.</p>
+                </div>
+                <div class="feature-card fade-in" style="animation-delay: 0.1s">
+                    <div class="feature-icon">
+                        <div class="step-number">2</div>
+                    </div>
+                    <h3>Customize Settings</h3>
+                    <p>Adjust dimensions, quality, format and other parameters to get exactly what you need.</p>
+                </div>
+                <div class="feature-card fade-in" style="animation-delay: 0.2s">
+                    <div class="feature-icon">
+                        <div class="step-number">3</div>
+                    </div>
+                    <h3>Download & Use</h3>
+                    <p>Download your optimized image and use it anywhere. All processing happens in your browser.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="testimonials">
+            <div class="section-header">
+                <h2>What Our Users Say</h2>
+                <p>Don't just take our word for it - hear from our satisfied users</p>
+            </div>
+            <div class="testimonial-grid">
+                <div class="testimonial-card fade-in">
+                    <div class="testimonial-text">
+                        "ProImage Tools saved me hours of work! As a real estate agent, I need to resize dozens of property photos daily. This tool is a game-changer!"
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <h4>Michael Anderson</h4>
+                            <p>Real Estate Professional</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-in" style="animation-delay: 0.1s">
+                    <div class="testimonial-text">
+                        "The signature optimizer is incredible! I used to struggle with getting my signature to look professional on documents. Now it's perfect every time."
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <h4>Sarah Johnson</h4>
+                            <p>Freelance Designer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-in" style="animation-delay: 0.2s">
+                    <div class="testimonial-text">
+                        "I've tried many image tools, but ProImage stands out with its simplicity and quality. The PDF converter is my favorite - it just works!"
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <h4>David Chen</h4>
+                            <p>Small Business Owner</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="faq-section">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+                <p>Everything you need to know about our tools</p>
+            </div>
+            <div class="faq-grid">
+                <div class="faq-card fade-in">
+                    <h3><i class="fas fa-question-circle"></i> Is this really free?</h3>
+                    <p>Yes! All our tools are 100% free to use with no hidden costs. We believe powerful image processing tools should be accessible to everyone.</p>
+                </div>
+                <div class="faq-card fade-in" style="animation-delay: 0.1s">
+                    <h3><i class="fas fa-cloud"></i> Are my images uploaded to your servers?</h3>
+                    <p>No. All processing happens directly in your browser. Your images never leave your computer, ensuring complete privacy and security.</p>
+                </div>
+                <div class="faq-card fade-in" style="animation-delay: 0.2s">
+                    <h3><i class="fas fa-file"></i> What file formats do you support?</h3>
+                    <p>We support JPG, PNG, WebP, GIF, and BMP for input. For output, you can choose between JPG, PNG, WebP, and PDF formats.</p>
+                </div>
+                <div class="faq-card fade-in" style="animation-delay: 0.3s">
+                    <h3><i class="fas fa-mobile-alt"></i> Do your tools work on mobile?</h3>
+                    <p>Absolutely! Our tools are fully responsive and work on any device - smartphones, tablets, and desktops.</p>
+                </div>
+                <div class="faq-card fade-in" style="animation-delay: 0.4s">
+                    <h3><i class="fas fa-lock"></i> Is there a file size limit?</h3>
+                    <p>We recommend files under 20MB for best performance, but you can process larger files depending on your device's capabilities.</p>
+                </div>
+                <div class="faq-card fade-in" style="animation-delay: 0.5s">
+                    <h3><i class="fas fa-save"></i> How long are my processed files saved?</h3>
+                    <p>We don't save your files at all. Your processed images are available for immediate download but are not stored on any server.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2>Ready to Optimize Your Images?</h2>
+                <p>Join thousands of satisfied users who trust ProImage Tools for their image processing needs</p>
+                <a href="#tools" class="btn btn-light">
+                    <i class="fas fa-bolt btn-icon"></i> Get Started Free
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ProImage Tools</h3>
+                    <p style="margin-bottom: 25px; line-height: 1.7;">Professional image processing tools for everyone. Fast, secure, and completely free!</p>
+                    <div class="social-links">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Tools</h3>
+                    <ul class="footer-links">
+                        <li><a href="photo-resizer.html"><i class="fas fa-image"></i> Photo Resizer</a></li>
+                        <li><a href="signature-optimizer.html"><i class="fas fa-signature"></i> Signature Optimizer</a></li>
+                        <li><a href="image-compressor.html"><i class="fas fa-compress-alt"></i> Image Compressor</a></li>
+                        <li><a href="pdf-converter.html"><i class="fas fa-file-pdf"></i> PDF Converter</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="tutorials.html"><i class="fas fa-book"></i> Tutorials</a></li>
+                        <li><a href="help-center.html"><i class="fas fa-question-circle"></i> Help Center</a></li>
+                        <li><a href="blog.html"><i class="fas fa-blog"></i> Blog</a></li>
+                        <li><a href="extensions.html"><i class="fas fa-download"></i> Browser Extensions</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul class="footer-links">
+                        <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+                        <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                        <li><a href="privacy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+                        <li><a href="terms.html"><i class="fas fa-file-alt"></i> Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 ProImage Tools. All rights reserved. | 100% Free Forever | Made with <i class="fas fa-heart" style="color: #e74c3c;"></i> for Creators</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme Toggle
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const icon = themeToggle.querySelector('i');
+                if (document.body.classList.contains('dark-mode')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        window.scrollTo({
+                            top: target.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Add animation to elements when they enter the viewport
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            document.querySelectorAll('.fade-in').forEach(element => {
+                observer.observe(element);
+            });
+            
+            // Set current year in footer
+            document.querySelector('.copyright p').innerHTML = 
+                document.querySelector('.copyright p').innerHTML.replace('2023', new Date().getFullYear());
+        });
+    </script>
+</body>
+</html>
